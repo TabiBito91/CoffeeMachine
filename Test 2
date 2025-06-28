@@ -1,0 +1,131 @@
+MENU = {
+    "espresso": {
+        "ingredients": {
+            "water": 50,
+            "coffee": 18,
+        },
+        "cost": 1.5,
+    },
+    "latte": {
+        "ingredients": {
+            "water": 200,
+            "milk": 150,
+            "coffee": 24,
+        },
+        "cost": 2.5,
+    },
+    "cappuccino": {
+        "ingredients": {
+            "water": 250,
+            "milk": 100,
+            "coffee": 24,
+        },
+        "cost": 3.0,
+    }
+}
+
+resources = {
+    "water": 300,
+    "milk": 200,
+    "coffee": 100,
+}
+
+# Create a variable for available cash
+
+money = 0
+
+# Create a resource function
+
+def resource_report(resources):
+    print(f"Water: {resources['water']}ml")
+    print(f"Milk: {resources['milk']}ml")
+    print(f"Coffee: {resources['coffee']}g")
+    print(f"Money: ${money}")
+
+# Create a function that calculates payment
+
+price_espresso = MENU['espresso'] ['cost']
+price_latte = MENU['latte'] ['cost']
+price_cappuccino = MENU['cappuccino']['cost']
+
+def calculate_payment(coffee_choice):
+    print("Please insert coins")
+    quarters = int(input("how many quarters?"))
+    dimes = int(input("how many dimes?"))
+    nickles = int(input("how many nickles?"))
+    pennies = int(input("how many pennies?"))
+
+    return (quarters * 0.25) + (dimes * 0.10) + (nickles * 0.05) + (pennies * 0.01)
+
+
+# Create a function that checks for whether the resources are sufficient
+
+def check_resources(coffee_choice):
+    ingredients = MENU[coffee_choice]['ingredients']
+
+    for item in ingredients:
+        if resources.get(item,0) < ingredients[item]:
+            print("There are not enough resources. Please add more.")
+            return False
+
+    for item in ingredients:
+        resources[item] -= ingredients[item]
+
+    return True
+
+
+# The prompt for coffee should be asked repeatedly, unless "off" is entered - Make a while loop where "false" activates when "off"
+
+machine_on = True
+
+while machine_on:
+    change = 0
+    # Prompt the user by asking what type of coffee they would like
+    coffee_choice = input("What would you like? (espresso/latte/cappuccino)").lower()
+    # Create different scenarios for each choice
+    if coffee_choice == "espresso":
+        if not check_resources(coffee_choice):
+            continue
+        inserted_amount = calculate_payment(coffee_choice)
+        if inserted_amount < price_espresso:
+            print("Sorry that's not enough money. Money refunded")
+        else:
+            money += inserted_amount
+            change = inserted_amount - price_espresso
+            print(f"Here is your ${change}.")
+            print(f"Here is your {coffee_choice}. Enjoy!")
+
+    elif coffee_choice == "latte":
+        if not check_resources(coffee_choice):
+            continue
+        inserted_amount = calculate_payment(coffee_choice)
+        if inserted_amount < price_latte:
+            print("Sorry that's not enough money. Money refunded")
+        else:
+            money += inserted_amount
+            change = inserted_amount - price_latte
+            print(f"Here is your ${change}.")
+            print(f"Here is your {coffee_choice}. Enjoy!")
+
+    elif coffee_choice == "cappuccino":
+        if not check_resources(coffee_choice):
+            continue
+        inserted_amount = calculate_payment(coffee_choice)
+
+        if inserted_amount < price_latte:
+            print("Sorry that's not enough money. Money refunded")
+        else:
+            money += inserted_amount
+            change = inserted_amount - price_cappuccino
+            print(f"Here is your ${change}.")
+            print(f"Here is your {coffee_choice}. Enjoy!")
+
+    elif coffee_choice == "report":
+        resource_report(resources)
+
+    elif coffee_choice == "off":
+        print("Coffee machine powering down. Have a nice day")
+        machine_on = False
+
+    else:
+        print("Please re-input your choice.")
